@@ -1,0 +1,39 @@
+extends layout
+
+block content
+  .container
+    h3= title
+
+    form(name="add-estimation", method="post")
+          div.input
+              p.label Name
+              input(type="text", name="name")
+          div.input
+              p.label Email
+              input(type="text", name="email")
+          div.input
+              p.label Message
+              textarea(name="message", cols="40", rows="5")
+          div.actions
+              input(type="submit", value="Send Message")
+
+
+    form
+      div(class="form-group")
+        label(for="name") Your name
+        input(type="text" class="form-control" id="name" placeholder="Your name")
+
+      div(class="form-group")
+        label(for="email") Email address
+        input(type="email" class="form-control" id="email" aria-describedby="emailHelp" placeholder="Enter email")
+        small(id="emailHelp" class="form-text text-muted") We'll never share your email with anyone else.
+
+      div(class="form-group")
+        label(for="message") Send us a message
+        textarea(class="form-control" id="message" rows="3")
+
+      div(class="form-check")
+        input(type="checkbox" class="form-check-input" id="exampleCheck1")
+        label(class="form-check-label" for="exampleCheck1") Subscribe for news and our best offers
+
+      button(type="submit" class="btn btn-primary") Submit

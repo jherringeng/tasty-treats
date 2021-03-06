@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1= title
+  p See below for messages from customers:
+  p= messagesData 
+
+  ul
+    each item in messagesData
+      li= item
