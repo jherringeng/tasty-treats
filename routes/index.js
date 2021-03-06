@@ -1,7 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
-const fs = require('fs').promises;
+const fs = require('fs');
+const fsp = require('fs').promises;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -22,10 +23,10 @@ router.post('/', function (req, res) {
     var messageFileName = 'message-' + nowString + '.txt';
     console.log(messageFileName);
 
-    fs.open(messageFileName, 'w', function (err, file) {
-      if (err) throw err;
-      console.log('Saved!');
-    });
+    // fs.open(messageFileName, 'w', function (err, file) {
+    //   if (err) throw err;
+    //   console.log('Saved!');
+    // });
 
     fs.writeFile('./messages/'+ messageFileName, messageData, function(err) {
     if(err) {
@@ -67,7 +68,7 @@ var messageFiles=['message.txt'], messageData = ['somedata'];
 
 router.get('/messages1', async function(req, res, next) {
   await getMessageFiles()
-  await getMessageDataFromFile('message.txt')
+  await getMessageDataFromFile()
 
   res.render('messages1', { title: 'Your messages', messageData: messageData, messageFiles: messageFiles });
 })
@@ -120,27 +121,30 @@ async function getMessageDataFromFile() {
 
 router.get('/test', async function(req, res, next) {
   var testDataArray = [];
+  var messageDataJSONArray = [];
   var testFileNames = await testDirRead();
   for (const file of testFileNames) {
     const contents = await testFileRead(file, 'utf8');
     console.log(contents);
     testDataArray.push(contents)
+    var messageDataJSON = JSON.parse(contents);
+    messageDataJSONArray.push(messageDataJSON)
   }
-  var testData = await testFileRead("message.txt");
+  // var testData = await testFileRead("message.txt");
 
-  res.render('test', { title: 'Your messages', testData: testData, testFileNames: testFileNames, testDataArray: testDataArray });
+  res.render('test', { title: 'Your messages', messageDataJSONArray: messageDataJSONArray, testFileNames: testFileNames, testDataArray: testDataArray });
 })
 
 async function testDirRead() {
   try {
-    return fs.readdir('./messages');
+    return fsp.readdir('./messages');
   } catch (err) {
     console.error('Error occured while reading directory!', err);
   }
 }
 
 async function testFileRead(file) {
-    const data = await fs.readFile("./messages/" + file, "binary");
+    const data = await fsp.readFile("./messages/" + file, "binary");
     return new Buffer(data);
 }
 

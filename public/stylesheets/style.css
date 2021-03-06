@@ -1,8 +1,55 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: Helvetica, Arial, sans-serif;
+  background-image: url("../images/flowershop.jpg");
+}
+
+h3 {
+  font: 30px "tasty", Helvetica, Arial, sans-serif;
+}
+
+a {
+  font: 24px "tasty", Helvetica, Arial, sans-serif;
+}
+
+label {
+  font: 18px "tasty", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+@font-face {
+    font-family: 'tasty';
+    src: url("./Let's Bake Muffins - TTF.ttf");
+}
+
+input {
+  font: Helvetica, Arial, sans-serif;
+}
+
+textarea {
+  font: Helvetica, Arial, sans-serif;
+}
+
+.container {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 12px;
+  border-radius: 12px;
+  margin-top: 12px;
+}
+
+.form-group  {
+  margin: 12px 0px;
+}
+
+.form-check {
+  margin: 12px 0px;
+}
+
+.message {
+  border-radius: 12px;
+  background-color: #F7F7F9;
+  margin: 12px 0px;
+  padding: 12px;
 }
