@@ -1,6 +1,10 @@
 body {
   font: Helvetica, Arial, sans-serif;
-  background-image: url("../images/flowershop.jpg");
+  background: url("../images/bakery.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;;
 }
 
 h3 {
