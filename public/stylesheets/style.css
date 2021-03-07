@@ -7,6 +7,11 @@ body {
   background-size: cover;;
 }
 
+@font-face {
+    font-family: 'tasty';
+    src: url("./Let's Bake Muffins - TTF.ttf");
+}
+
 h3 {
   font: 30px "tasty", Helvetica, Arial, sans-serif;
 }
@@ -21,11 +26,6 @@ label {
 
 a {
   color: #00B7FF;
-}
-
-@font-face {
-    font-family: 'tasty';
-    src: url("./Let's Bake Muffins - TTF.ttf");
 }
 
 input {
@@ -56,4 +56,14 @@ textarea {
   background-color: #F7F7F9;
   margin: 12px 0px;
   padding: 12px;
+}
+
+.message-email {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#message-pic {
+  border-radius: 12px;
 }

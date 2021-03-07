@@ -10,7 +10,7 @@ block content
       div(class="message")
         .row
           div.col-md-3 From: #{ message.name }
-          div.col-md-3 #{ message.email }
+          div(class="message-email col-md-3") #{ message.email }
           div.col-md-3 Date and Time: #{ message.dateTime }
           div.col-md-3 #{ message.subscribed }
           div.col-md-12 Message:
