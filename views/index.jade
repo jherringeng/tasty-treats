@@ -11,7 +11,9 @@ block content
     .row
       .col-md-6
 
-        form(action="/submit" method="post")
+        p(class="error")= error
+
+        form(id="messageForm" action="/submit" method="post")
           div(class="form-group")
             label(for="name") Your name
             input(type="text" class="form-control" id="name" name="name" placeholder="Your name" required)
@@ -35,3 +37,6 @@ block content
 
       .col-md-6
         img(src="/images/bakery-treats.jpg" id="message-pic" class="img-fluid")
+
+
+  

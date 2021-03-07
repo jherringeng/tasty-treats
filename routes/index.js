@@ -1,12 +1,15 @@
 var express = require('express');
 var router = express.Router();
+const fetch = require('node-fetch');
+const { stringify } = require('querystring');
 
 const fs = require('fs');
 const fsp = require('fs').promises;
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Send Message' });
+  var error = "";
+  res.render('index', { title: 'Send Message', error: error });
 });
 
 router.get('/home', function(req, res, next) {
@@ -17,7 +20,29 @@ router.get('/thank-you', function(req, res, next) {
   res.render('thank-you', { title: 'Thank you' });
 });
 
-router.post('/submit', function (req, res) {
+router.post('/submit', function (req, res, next) {
+
+  console.log("Captcha " + JSON.stringify(req.body))
+
+  if (!req.body['g-recaptcha-response']) {
+    var error = "Error: Please complete recaptcha to message us.";
+    res.render('index', { title: 'Send Message', error: error });
+  } else {
+    // const secretKey = '6Le9vnUaAAAAAJT0ayqmIZBs_vutAHnaFwqilbn7';
+    //
+    // // Verify URL
+    // const query = stringify({
+    //   secret: secretKey,
+    //   response: req.body['g-recaptcha-response'],
+    //   remoteip: req.connection.remoteAddress
+    // });
+    // const verifyURL = `https://google.com/recaptcha/api/siteverify?${query}`;
+
+    // Make a request to verifyURL
+    // const body = await fetch(verifyURL)
+    // .then(response => response.json());
+
+    // console.log(body);
 
     var now = new Date();
     var nowString = now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate() + "-" + now.getHours() + "-" + now.getMinutes();
@@ -41,6 +66,8 @@ router.post('/submit', function (req, res) {
     });
 
     res.redirect('/thank-you');
+  }
+
 });
 
 // router.get('/messages', function(req, res, next) {
