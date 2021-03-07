@@ -17,7 +17,7 @@ router.get('/thank-you', function(req, res, next) {
   res.render('thank-you', { title: 'Thank you' });
 });
 
-router.post('/', function (req, res) {
+router.post('/submit', function (req, res) {
 
     var now = new Date();
     var nowString = now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate() + "-" + now.getHours() + "-" + now.getMinutes();

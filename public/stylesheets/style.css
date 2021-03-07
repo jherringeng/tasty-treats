@@ -65,6 +65,10 @@ textarea {
   margin: 12px 0px;
 }
 
+.g-recaptcha {
+  margin: 12px 0px;
+}
+
 .message {
   border-radius: 12px;
   background-color: #F7F7F9;

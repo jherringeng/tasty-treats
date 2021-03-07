@@ -1,5 +1,8 @@
 extends layout
 
+block extraHeader
+  script(src="https://www.google.com/recaptcha/api.js" async defer)
+
 block content
 
   .container
@@ -8,7 +11,7 @@ block content
     .row
       .col-md-6
 
-        form(name="add-estimation", method="post")
+        form(action="/submit" method="post")
           div(class="form-group")
             label(for="name") Your name
             input(type="text" class="form-control" id="name" name="name" placeholder="Your name" required)
@@ -25,6 +28,8 @@ block content
           div(class="form-check")
             input(type="checkbox" class="form-check-input" id="subscribed" name="subscribed")
             label(class="form-check-label" for="subscribed") Subscribe for news and our best offers
+
+          div(class="g-recaptcha" data-sitekey="6Le9vnUaAAAAAKE8ecVqg9rVcseq-U-SEkhr7Koz")
 
           button(type="submit" class="btn btn-primary") Send message
 
