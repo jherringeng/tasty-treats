@@ -1,0 +1,9 @@
+https://tasty-treats.herokuapp.com/
+
+site key = 6Lcp7HQaAAAAAErvHbeKYbrxTQJXdTFV2huzwO2R
+secret key = 6Lcp7HQaAAAAADZ5IGJsK0xpmuvkngErhQIMvQQF
+
+localhost
+
+site key = 6Le9vnUaAAAAAKE8ecVqg9rVcseq-U-SEkhr7Koz
+secret key = 6Le9vnUaAAAAAJT0ayqmIZBs_vutAHnaFwqilbn7

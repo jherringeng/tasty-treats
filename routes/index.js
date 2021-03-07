@@ -9,6 +9,10 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Send Message' });
 });
 
+router.get('/home', function(req, res, next) {
+  res.render('home', { title: 'Tasty Treats' });
+});
+
 router.get('/thank-you', function(req, res, next) {
   res.render('thank-you', { title: 'Thank you' });
 });

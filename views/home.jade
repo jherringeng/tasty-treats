@@ -1,0 +1,25 @@
+extends layout
+
+block extraHeader
+    link(rel='stylesheet', href='stylesheets/home-style.css')
+
+block content
+
+  div(class="jumbotron")
+    div
+      h1(class="display-4") Welcome to Tasty Treats!
+      p(class="lead") If you're in the mood for a tasty treat then come down to see us!
+      p(class="lead") We bake all your favourites fresh in store everyday!
+      p(class="lead") Want croissants? You'll love ours! Ginger bread men?
+      hr(class="my-4")
+      p Let us know any questions or feedback and we'll get back to you soon
+      p(class="lead")
+        a(class="btn btn-primary btn-lg" href="/" role="button") Message us
+
+  .container
+    .row
+      .col-md-6
+        h3 We do all your tasty treats!
+
+      .col-md-6
+        img(src="/images/bakery-treats.jpg" id="message-pic" class="img-fluid")

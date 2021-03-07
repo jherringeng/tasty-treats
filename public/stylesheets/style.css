@@ -21,7 +21,7 @@ a {
 }
 
 label {
-  font: 18px "tasty", Helvetica, Arial, sans-serif;
+  font: 24px "tasty", Helvetica, Arial, sans-serif;
 }
 
 a {
@@ -34,6 +34,20 @@ input {
 
 textarea {
   font: Helvetica, Arial, sans-serif;
+}
+
+.jumbotron {
+  background-image: url("../images/bakery.jpg");
+  background-size: cover;
+  color: white;
+  font: 36px "tasty", Helvetica, Arial, sans-serif;
+  padding: 24px;
+}
+
+.jumbotron div{
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  padding: 12px;
 }
 
 .container {
