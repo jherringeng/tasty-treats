@@ -20,7 +20,7 @@ router.get('/thank-you', function(req, res, next) {
   res.render('thank-you', { title: 'Thank you' });
 });
 
-router.post('/submit', function (req, res, next) {
+router.post('/submit', async function (req, res, next) {
 
   console.log("Captcha " + JSON.stringify(req.body))
 
@@ -28,44 +28,52 @@ router.post('/submit', function (req, res, next) {
     var error = "Error: Please complete recaptcha to message us.";
     res.render('index', { title: 'Send Message', error: error });
   } else {
-    // const secretKey = '6Le9vnUaAAAAAJT0ayqmIZBs_vutAHnaFwqilbn7';
-    //
-    // // Verify URL
-    // const query = stringify({
-    //   secret: secretKey,
-    //   response: req.body['g-recaptcha-response'],
-    //   remoteip: req.connection.remoteAddress
-    // });
-    // const verifyURL = `https://google.com/recaptcha/api/siteverify?${query}`;
+
+    const secretKey = '6Le9vnUaAAAAAJT0ayqmIZBs_vutAHnaFwqilbn7';
+
+    // Verify URL
+    const query = stringify({
+      secret: secretKey,
+      response: req.body['g-recaptcha-response'],
+      remoteip: req.connection.remoteAddress
+    });
+    const verifyURL = `https://google.com/recaptcha/api/siteverify?${query}`;
 
     // Make a request to verifyURL
-    // const body = await fetch(verifyURL)
-    // .then(response => response.json());
+    const body = await fetch(verifyURL)
+    .then(response => response.json());
 
-    // console.log(body);
+    console.log(body);
 
-    var now = new Date();
-    var nowString = now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate() + "-" + now.getHours() + "-" + now.getMinutes();
-    req.body['dateTime'] = nowString;
-    if ("subscribed" in req.body) {
-      req.body['subscribed'] = "Subscribed";
-    } else {
-      req.body['subscribed'] = "Not Subscribed";
+    if (body.success !== undefined && !body.success) {
+      var error = "Error: Recaptcha failed.";
+      res.render('index', { title: 'Send Message', error: error });
     }
-    var messageData = JSON.stringify(req.body);
+    else {
+      var now = new Date();
+      var nowString = now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate() + "-" + now.getHours() + "-" + now.getMinutes();
+      req.body['dateTime'] = nowString;
+      if ("subscribed" in req.body) {
+        req.body['subscribed'] = "Subscribed";
+      } else {
+        req.body['subscribed'] = "Not Subscribed";
+      }
+      var messageData = JSON.stringify(req.body);
 
-    var messageFileName = 'message-' + nowString + '.txt';
-    console.log(messageFileName);
+      var messageFileName = 'message-' + nowString + '.txt';
+      console.log(messageFileName);
 
 
-    fs.writeFile('./messages/'+ messageFileName, messageData, function(err) {
-    if(err) {
-        return console.log(err);
+      fs.writeFile('./messages/'+ messageFileName, messageData, function(err) {
+      if(err) {
+          return console.log(err);
+      }
+      console.log("The file was saved!");
+      });
+
+      res.redirect('/thank-you');
     }
-    console.log("The file was saved!");
-    });
 
-    res.redirect('/thank-you');
   }
 
 });
@@ -154,7 +162,6 @@ router.get('/messages', async function(req, res, next) {
   var testFileNames = await testDirRead();
   for (const file of testFileNames) {
     const contents = await testFileRead(file, 'utf8');
-    console.log(contents);
     testDataArray.push(contents)
     var messageDataJSON = JSON.parse(contents);
     messageDataJSONArray.push(messageDataJSON)
