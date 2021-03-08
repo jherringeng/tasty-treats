@@ -1,12 +1,15 @@
+// Modules the app uses. Express for routing, fetch for recaptcha, stringify for stringifying a query
 var express = require('express');
 var router = express.Router();
 const fetch = require('node-fetch');
 const { stringify } = require('querystring');
 
+// File readers / writers. fsp allows promises for async / await
 const fs = require('fs');
 const fsp = require('fs').promises;
 
-/* GET home page. */
+/* GET home page. Actually it's the messages page as home page and route were added later
+Other routes for pages including a thank you page when sending message */
 router.get('/', function(req, res, next) {
   var error = "";
   res.render('index', { title: 'Send Message', error: error });
@@ -20,6 +23,7 @@ router.get('/thank-you', function(req, res, next) {
   res.render('thank-you', { title: 'Thank you' });
 });
 
+// Handles the form after submit button pressed. async as uses await (promises)
 router.post('/submit', async function (req, res, next) {
 
   // If no recaptcha it returns with error displayed
@@ -28,6 +32,7 @@ router.post('/submit', async function (req, res, next) {
     res.render('index', { title: 'Send Message', error: error });
   } else {
 
+    // recaptcha secret key
     const secretKey = '6Lcp7HQaAAAAADZ5IGJsK0xpmuvkngErhQIMvQQF';
 
     // Verify URL
@@ -38,17 +43,20 @@ router.post('/submit', async function (req, res, next) {
     });
     const verifyURL = `https://google.com/recaptcha/api/siteverify?${query}`;
 
-    // Make a request to verifyURL
+    // Make a request to verifyURL. Async so uses await
     const body = await fetch(verifyURL)
     .then(response => response.json());
 
     console.log(body);
 
+    // Checks to see if recaptcha valid (those naughty bots!). Returns to message page with error if not
     if (body.success !== undefined && !body.success) {
       var error = "Error: Recaptcha failed.";
       res.render('index', { title: 'Send Message', error: error });
     }
     else {
+
+      // Date for adding to message data and file name
       // Add date and time with processing if < 10 i.e. 9 becomes 09
       var now = new Date();
       var month = addLeadingZero(now.getMonth()); var date = addLeadingZero(now.getDate());
@@ -63,14 +71,16 @@ router.post('/submit', async function (req, res, next) {
         req.body['subscribed'] = "Not Subscribed";
       }
 
-      // Remove recaptcha before stringify
+      // Remove recaptcha response before stringify
       delete req.body['g-recaptcha-response'];
+      // Stringify data for saving to text file
       var messageData = JSON.stringify(req.body);
 
       // Add data to filename for unique name and easier sorting
       // Note: likely error if 2 files are uploaded in same minute
       var messageFileName = 'message-' + nowString + '.txt';
 
+      // Writes the file. Not using await as not necessary
       fs.writeFile('./messages/'+ messageFileName, messageData, function(err) {
       if(err) {
           return console.log(err);
@@ -78,6 +88,7 @@ router.post('/submit', async function (req, res, next) {
       console.log("The file was saved!");
       });
 
+      // Redirect to thank you page
       res.redirect('/thank-you');
     }
 
@@ -85,6 +96,7 @@ router.post('/submit', async function (req, res, next) {
 
 });
 
+// Adds leading zero to months, dates, hours < 10 
 function addLeadingZero(num) {
   if (num < 10) {
     return "0" + num;
