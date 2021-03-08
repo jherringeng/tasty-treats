@@ -22,14 +22,13 @@ router.get('/thank-you', function(req, res, next) {
 
 router.post('/submit', async function (req, res, next) {
 
-  console.log("Captcha " + JSON.stringify(req.body))
-
+  // If no recaptcha it returns with error displayed
   if (!req.body['g-recaptcha-response']) {
     var error = "Error: Please complete recaptcha to message us.";
     res.render('index', { title: 'Send Message', error: error });
   } else {
 
-    const secretKey = '6Le9vnUaAAAAAJT0ayqmIZBs_vutAHnaFwqilbn7';
+    const secretKey = '6Lcp7HQaAAAAADZ5IGJsK0xpmuvkngErhQIMvQQF';
 
     // Verify URL
     const query = stringify({
@@ -50,19 +49,27 @@ router.post('/submit', async function (req, res, next) {
       res.render('index', { title: 'Send Message', error: error });
     }
     else {
+      // Add date and time with processing if < 10 i.e. 9 becomes 09
       var now = new Date();
-      var nowString = now.getFullYear() + "-" + now.getMonth() + "-" + now.getDate() + "-" + now.getHours() + "-" + now.getMinutes();
+      var month = addLeadingZero(now.getMonth()); var date = addLeadingZero(now.getDate());
+      var hour = addLeadingZero(now.getHours()); var minute = addLeadingZero(now.getMinutes());
+      var nowString = now.getFullYear() + "-" + month + "-" + date + "-" + hour + "-" + minute;
       req.body['dateTime'] = nowString;
+
+      // Processing of subscribed key
       if ("subscribed" in req.body) {
         req.body['subscribed'] = "Subscribed";
       } else {
         req.body['subscribed'] = "Not Subscribed";
       }
+
+      // Remove recaptcha before stringify
+      delete req.body['g-recaptcha-response'];
       var messageData = JSON.stringify(req.body);
 
+      // Add data to filename for unique name and easier sorting
+      // Note: likely error if 2 files are uploaded in same minute
       var messageFileName = 'message-' + nowString + '.txt';
-      console.log(messageFileName);
-
 
       fs.writeFile('./messages/'+ messageFileName, messageData, function(err) {
       if(err) {
@@ -78,100 +85,30 @@ router.post('/submit', async function (req, res, next) {
 
 });
 
-// router.get('/messages', function(req, res, next) {
-//
-//   var messagesData = ['Why', 'not', 'working?'];
-//
-//   fs.readdir('./messages', (err, files) => {
-//     files.forEach(file => {
-//       console.log(file);
-//       fs.readFile('./messages/' + file, 'utf8' , (err, data) => {
-//         if (err) {
-//           console.error(err)
-//           return
-//         }
-//         messagesData.push(data)
-//         console.log(messagesData)
-//       })
-//     });
-//   })
-//
-//   messagesData.push('test')
-//   console.log(messagesData);
-//   res.render('messages', { title: 'Your messages', messagesData: messagesData });
-// });
-//
-// var messageFiles=['message.txt'], messageData = ['somedata'];
-//
-// router.get('/messages1', async function(req, res, next) {
-//   await getMessageFiles()
-//   await getMessageDataFromFile()
-//
-//   res.render('messages1', { title: 'Your messages', messageData: messageData, messageFiles: messageFiles });
-// })
-//
-// async function getMessageFiles() {
-// 	try {
-// 	   await fs.readdir('./messages', (err, files) => {
-//         files.forEach(file => {
-//           console.log('filename ' + file);
-//           messageFiles.push(file);
-//         })
-//     });
-//     console.log(messageFiles);
-// 	} catch (err) {
-// 		console.log(err);
-// 	}
-// }
-//
-// async function getMessageData() {
-//   console.log("get message data");
-// 	try {
-//     await messageFiles.forEach(async function(file) {
-//       console.log(file);
-//       await getMessageDataFromFile(file)
-//       // messageData.push("data")
-//     })
-// 	} catch (err) {
-// 		console.log(err);
-// 	}
-// }
-//
-// async function getMessageDataFromFile() {
-// 	try {
-//     messageFiles.forEach(async function(file) {
-//       console.log('./messages/' + file);
-//       await fs.readFile('./messages/' + file, 'utf8' , function (err, data) {
-//          if (err) {
-//            console.error('Error: ' + err)
-//          }
-//          console.log('data output ' + data);
-//          messageData.push(data)
-//          console.log('message data ' + messageData);
-//        })
-//      })
-//     // messageData.push("data")
-// 	} catch (err) {
-// 		console.log(err);
-// 	}
-// }
+function addLeadingZero(num) {
+  if (num < 10) {
+    return "0" + num;
+  } else {
+    return num;
+  }
+}
 
 router.get('/messages', async function(req, res, next) {
   var testDataArray = [];
   var messageDataJSONArray = [];
-  var testFileNames = await testDirRead();
-  for (const file of testFileNames) {
-    const contents = await testFileRead(file, 'utf8');
+  var messageFileNames = await getDirContents();
+  for (const file of messageFileNames) {
+    const contents = await getFileContents(file, 'utf8');
     testDataArray.push(contents)
     var messageDataJSON = JSON.parse(contents);
     messageDataJSONArray.push(messageDataJSON)
   }
   messageDataJSONArray.sort( compareDates );
 
-  res.render('messages', { title: 'Your messages', messageDataJSONArray: messageDataJSONArray, testFileNames: testFileNames, testDataArray: testDataArray });
+  res.render('messages', { title: 'Your messages', messageDataJSONArray: messageDataJSONArray,  testDataArray: testDataArray });
 })
 
-async function testDirRead() {
+async function getDirContents() {
   try {
     return fsp.readdir('./messages');
   } catch (err) {
@@ -179,7 +116,7 @@ async function testDirRead() {
   }
 }
 
-async function testFileRead(file) {
+async function getFileContents(file) {
     const data = await fsp.readFile("./messages/" + file, "binary");
     return new Buffer(data);
 }
